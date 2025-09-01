@@ -1,47 +1,57 @@
-#!/usr/bin/env python3
-import sys, os
-#from aubio import source, onset
-#import librosa
-#import spleeter
-# def get_onset_times(file_path):
-#     window_size = 1024 # FFT size
-#     hop_size = window_size // 4
+import os
+import librosa
 
-#     sample_rate = 0
-#     src_func = source(file_path, sample_rate, hop_size)
-#     sample_rate = src_func.samplerate
-#     onset_func = onset('default', window_size, hop_size)
+def create_beatmaps_from_spleeter_folders(outputs_root):
+    """
+    Loops through Spleeter output subfolders to create beatmaps from all .wav files.
+    """
+    #print(f"Starting search in directory: {outputs_root}")
+    found_files = False
     
-#     duration = float(src_func.duration) / src_func.samplerate
+    # os.walk will traverse the directory and all subdirectories
+    for subdir, dirs, files in os.walk(outputs_root):
+        #print(f"Checking directory: {subdir}")
+        
+        # Check if the directory has any files that end with .wav
+        wav_files = [f for f in files if f.endswith('.wav')]
+        if wav_files:
+            #print(f"Found .wav files: {wav_files}")
+            found_files = True
+        
+        for file in wav_files:
+            file_path = os.path.join(subdir, file)
+            #print(f"Attempting to process file: {file_path}")
+            
+            try:
+                # Load the audio file
+                x, sr = librosa.load(file_path)
+                
+                # Detect onsets
+                onset_frames = librosa.onset.onset_detect(y=x, sr=sr)
+                onset_times = librosa.frames_to_time(onset_frames)
+                
+                # Create and write to the beatmap file
 
-#     onset_times = [] # seconds
-#     while True: # read frames
-#         samples, num_frames_read = src_func()
-#         if onset_func(samples):
-#             onset_time = onset_func.get_last_s()
-#             if onset_time < duration:
-#                 onset_times.append(onset_time)
-#             else:
-#                 break
-#         if num_frames_read < hop_size:
-#             break
+                base_filename = os.path.splitext(os.path.basename(file_path))
+                dir_name = os.path.basename(subdir)
+                output_name = os.path.join("beatmaps", f"{dir_name}.{base_filename}.beatmap.txt")
+                    
+                    # Write the onset times to the beatmap file
+                with open(output_name, 'wt') as f:
+                    f.write('\n'.join(['%.4f' % onset_time for onset_time in onset_times]))
+                    
+                print(f"Beatmap created for {file_path} and saved to {output_name}")
+            except Exception as e:
+                print(f"ERROR: Could not process {file_path}. Reason: {e}")
+
+# Example usage:
+if __name__ == "__main__":
+    spleeter_outputs_path = "outputs"
+    absolute_outputs_path = os.path.abspath(spleeter_outputs_path)
     
-#     return onset_times
+    #print(f"Your script is looking for files in the following path: {absolute_outputs_path}")
+    #print(f"Does this folder exist? {os.path.isdir(absolute_outputs_path)}")
+    
+    # Now you can use the absolute path to ensure the code works as expected
+    create_beatmaps_from_spleeter_folders(spleeter_outputs_path)
 
-def main(args):
-    filename = args[0]
-
-    model_directory = "/workspaces/ominous-space-journey-7v475wgpwrxj3pxgg/models" 
-    os.system(f"""
-        docker run --rm \
-              -v $(pwd)/input:/input \
-              -v $(pwd)/outputs:/output \
-              -v {model_directory}:/model \
-              -e MODEL_PATH=/model \
-              deezer/spleeter:3.8-4stems \
-              separate -o /output -p spleeter:4stems /input/{filename}
-    """)
-
-
-if __name__=="__main__":
-    main(sys.argv[1:])
