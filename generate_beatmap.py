@@ -1,4 +1,4 @@
-#from flask import *
+#!/usr/bin/env python3
 import sys, os
 #from aubio import source, onset
 #import librosa
@@ -31,13 +31,14 @@ import sys, os
 def main(args):
     filename = args[0]
 
+    model_directory = "/workspaces/ominous-space-journey-7v475wgpwrxj3pxgg/models" 
     os.system(f"""
         docker run --rm \
-              - v $(pwd)/input:/input \
+              -v $(pwd)/input:/input \
               -v $(pwd)/outputs:/output \
-              -v $MODEL_DIRECTORY:/model \
+              -v {model_directory}:/model \
               -e MODEL_PATH=/model \
-              deezer/speeter:3.8-4stems \
+              deezer/spleeter:3.8-4stems \
               separate -o /output -p spleeter:4stems /input/{filename}
     """)
 
