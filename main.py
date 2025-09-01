@@ -1,13 +1,9 @@
-import librosa
-import generate_beatmap
+from song_split import song_split
+from mp3_converter import convert_yt_to_mp3
+from generate_beatmap import create_beatmaps_from_spleeter_folders
 
 def main():
-    file_path = '../game/audio/my-music.ogg'
-    x, sr = librosa.load(file_path)
-    onset_frames = librosa.onset.onset_detect(x, sr=sr, wait=1, pre_avg=1, post_avg=1, pre_max=1, post_max=1)
-    onset_times = librosa.frames_to_time(onset_frames)
-    # remove extension, .mp3, .wav etc.
-    file_name_no_extension, _ = os.path.splitext(file_path)
-    output_name = file_name_no_extension + '.beatmap.txt'
-    with open(output_name, 'wt') as f:
-        f.write('\n'.join(['%.4f' % onset_time for onset_time in onset_times]))
+    song = input("Enter a youtube url")
+    convert_yt_to_mp3(song)
+    song_split()
+    
