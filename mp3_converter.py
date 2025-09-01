@@ -9,7 +9,7 @@ def convert_yt_to_mp3(url, cookies_path=None):
             'preferredcodec': 'mp3',
             'preferredquality': '320',
         }],
-        'outtmpl': '%(title)s.mp3',  # Output filename template
+        'outtmpl': os.path.join("input", '%(title)s.mp3'), # Output filename template
     }
     
     # Add the cookies option if a cookie file path is provided and it exists
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         # Define the path to your cookies file here
         # Make sure to replace this with the correct path to your cookies.txt file
         # Example: cookies_file = "/home/vscode/my_project/cookies.txt"
-        cookies_file = None 
+        cookies_file = "www.youtube.com_cookies.txt"
         
         # Check if the cookies file path is provided as a second command-line argument
         if len(sys.argv) > 2:
