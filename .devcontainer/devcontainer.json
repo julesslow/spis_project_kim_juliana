@@ -1,14 +1,15 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-    "name": "Python 3",
-    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-    "image": "mcr.microsoft.com/devcontainers/python:0-3.11",
+    "name": "Python 3 & Node.js",
+    // Use the universal image as it's a good base for multi-language development.
+    "image": "mcr.microsoft.com/devcontainers/universal:latest",
 
-    // Features to add to the dev container. More info: https://containers.dev/features.
+    // Features to add to the dev container. We are adding both Docker-in-Docker and Node.js.
     "features": {
       "ghcr.io/devcontainers/features/docker-in-docker:2": {
         "version": "latest"
+      },
+      "ghcr.io/devcontainers/features/node:1": {
+        "version": "lts"
       }
     },
 
@@ -31,14 +32,15 @@
     "portsAttributes": {
         "5000": {
             "label": "Application",
-                        // Other options below: notify, openPreview, ignore
+            // Other options below: notify, openPreview, ignore
             "onAutoForward": "openBrowser" 
         }
     },
 
-
-    //Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "export MODEL_DIRECTORY=\"/workspaces/ominous-space-journey-7v475wgpwrxj3pxgg/models\" && pip3 install -r requirements.txt"
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // We are chaining the npm install with your existing pip install command.
+    "postCreateCommand": "npm install && export MODEL_DIRECTORY=\"/workspaces/ominous-space-journey-7v475wgpwrxj3pxgg/models\" && pip3 install -r requirements.txt"
     // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
     // "remoteUser": "root"
+
 }
