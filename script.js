@@ -1,60 +1,51 @@
-let width = 1440;
-let height = 900;
-let logo, main_menu, play_button, settings_button, upload_button, info_button;
+// Wait until the entire HTML page is loaded before running the script
+document.addEventListener('DOMContentLoaded', () => {
 
-function preload(){
-  logo = loadImage('logo.png');
-  play_button = loadImage("play_button.png")
-  main_menu = loadImage("menu_container.png")
-  settings_button = loadImage("settings_button.png")
-  upload_button = loadImage("upload_button.png")
-  info_button = loadImage("info_button.png")
-}
+    // Get references to all the clickable elements from the HTML
+    const playButton = document.getElementById('play-button');
+    const settingsButton = document.getElementById('settings-button');
+    const uploadButton = document.getElementById('upload-button');
+    const infoButton = document.getElementById('info-button');
 
-function setup() {
-  textAlign(CENTER);
-  rectMode(CENTER);
-  imageMode(CENTER);
-  createCanvas(width, height);
-  background(255, 247, 252);
-  menu();
-  
-  logo.resize(1000, 0);
-  image(logo, width/2, height-600);
-  
-  
-  play();
-}
+    // --- Define what happens when each button is clicked ---
 
-function draw() {
-  
-  
-}
+    playButton.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevents the link from trying to navigate
+        play();
+    });
 
-function play() {
-  play_button.resize(450, 0)
-  image(play_button, width-550, height/2+80)
+    settingsButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        settings();
+    });
 
-}
+    uploadButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        upload();
+    });
 
-function menu() {
-  let menu_w = 600
-  let menu_h = 530
-  main_menu.resize(600,0)
-  image(main_menu, menu_w, menu_h)
-  settings_button.resize(600,0)
-  image(settings_button, menu_w+20, menu_h)
-  //image(settings_button, menu_w+20, menu_h)
-  upload_button.resize(600,0)
-  image(upload_button, menu_w+20, menu_h)
-  info_button.resize(600,0)
-  image(info_button, menu_w+20, menu_h)
-}
+    infoButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        info();
+    });
 
-function settings() {
-  print("settings")
-}
+    // --- Your original functions ---
+    // We use console.log, which is the browser equivalent of p5's print()
 
-// function mousePressed(){
-//   if (mouseX 
-// }
+    function play() {
+        alert("Play button clicked!"); // Optional: show a popup
+    }
+
+    function settings() {
+        console.log("settings button clicked");
+    }
+
+    function upload() {
+        console.log("upload button clicked");
+    }
+
+    function info() {
+        console.log("info button clicked");
+    }
+
+});
