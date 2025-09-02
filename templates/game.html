@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osu Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #game-area {
+            width: 800px;
+            height: 600px;
+            background-color: #2d3748;
+            border: 2px solid #4a5568;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .note {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #e53e3e;
+            border-radius: 50%;
+            border: 2px solid #fed7d7;
+            cursor: pointer;
+            transition: transform 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="text-3xl font-bold mb-4">Osu!</div>
+    <div id="game-area" class="rounded-lg shadow-lg"></div>
+    <div class="mt-4">
+        <button id="startButton" class="px-6 py-2 bg-indigo-600 rounded-lg font-bold text-lg hover:bg-indigo-700">Start Game</button>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const startButton = document.getElementById('startButton');
+
+        function createNote() {
+            const note = document.createElement('div');
+            note.className = 'note';
+            const startX = Math.random() * (gameArea.clientWidth - 50);
+            const startY = -50;
+            note.style.left = `${startX}px`;
+            note.style.top = `${startY}px`;
+            gameArea.appendChild(note);
+
+            let speed = 5; // Pixels per frame
+            function animate() {
+                let currentY = parseFloat(note.style.top);
+                note.style.top = `${currentY + speed}px`;
+
+                if (currentY > gameArea.clientHeight) {
+                    note.remove(); // Remove note if it goes off screen
+                } else {
+                    requestAnimationFrame(animate);
+                }
+            }
+            animate();
+
+            note.addEventListener('click', () => {
+                note.remove();
+            });
+        }
+
+        startButton.addEventListener('click', () => {
+            setInterval(createNote, 1000); // Create a new note every second
+            startButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
