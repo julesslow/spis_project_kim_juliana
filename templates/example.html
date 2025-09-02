@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Another Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-lg shadow-md max-w-sm w-full text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Welcome!</h1>
+        <p class="text-gray-600 mb-6">Click the button below to go to the file uploader page.</p>
+        
+        <!-- The button now contains an imported image. -->
+        <button id="uploaderButton" class="p-0 border-none bg-transparent rounded-lg 
+                hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+            <!-- This is the imported image. Replace the URL with your own image's URL. -->
+            <img src="https://placehold.co/100x100/A020F0/FFFFFF?text=Upload" alt="Upload Icon" class="rounded-lg">
+        </button>
+    </div>
+
+    <!-- This is the JavaScript that makes the button work. -->
+    <script>
+        // We find our button by its ID and store it in a variable.
+        const uploaderButton = document.getElementById('uploaderButton');
+
+        // We add an "event listener" that waits for a click.
+        uploaderButton.addEventListener('click', () => {
+            // When the button is clicked, this code runs.
+            // It changes the page to the one at the '/' address.
+            window.location.href = '/';
+        });
+    </script>
+
+</body>
+</html>
