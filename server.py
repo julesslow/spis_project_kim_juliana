@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 # We create an instance of the Flask application.
 app = Flask(__name__)
@@ -8,6 +8,10 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'input'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('file_uploader.html')
 
 # This decorator defines a route that will handle file uploads.
 # We specify that it only accepts POST requests from the website.
