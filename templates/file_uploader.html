@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Uploader</title>
+    <!-- We're using Tailwind CSS for simple and modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-lg shadow-md max-w-sm w-full text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Upload a File</h1>
+        <p class="text-gray-600 mb-6">Choose a music file from your computer to upload.</p>
+        
+        <!-- The form is where the file input lives -->
+        <form id="uploadForm" class="space-y-4">
+            <!-- This is the most important part! The "file" type lets the user select a file. -->
+            <label for="fileInput" class="block text-gray-700 font-medium">Select a File:</label>
+            <input type="file" id="fileInput" name="musicFile" class="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-indigo-50 file:text-indigo-700
+                hover:file:bg-indigo-100">
+            
+            <button type="submit" class="w-full px-4 py-2 text-white bg-indigo-600 rounded-lg
+                hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+                Upload File
+            </button>
+        </form>
+
+        <!-- This is where we'll show a message after the upload attempt -->
+        <div id="messageContainer" class="mt-6 text-sm font-medium"></div>
+
+    </div>
+
+    <script>
+        // We get a reference to our form and the message area.
+        const uploadForm = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const messageContainer = document.getElementById('messageContainer');
+
+        // We listen for when the form is submitted.
+        uploadForm.addEventListener('submit', function(event) {
+            // This line stops the page from reloading when the form is submitted.
+            event.preventDefault();
+
+            // Get the selected file from the input.
+            const file = fileInput.files[0];
+
+            if (file) {
+                // This is a special object that gets the file ready to be sent to a server.
+                const formData = new FormData();
+                formData.append('music_file', file);
+                
+                // We'll show a "loading" message.
+                showMessage('Uploading file...', 'text-gray-500');
+
+                // This is the key part that sends the file to our new Python server.
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    // Check if the response was successful.
+                    if (!response.ok) {
+                        return response.json().then(err => Promise.reject(err));
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // This is where we handle a successful upload response.
+                    showMessage(data.message, 'text-green-500');
+                })
+                .catch(error => {
+                    // This is where we handle any errors.
+                    console.error('Upload failed:', error);
+                    showMessage('Upload failed. Please try again.', 'text-red-500');
+                });
+            } else {
+                // If the user didn't select a file, we tell them.
+                showMessage('Please select a file first.', 'text-red-500');
+            }
+        });
+
+        // A helper function to easily show messages to the user.
+        function showMessage(text, colorClass) {
+            messageContainer.textContent = text;
+            messageContainer.className = `mt-6 text-sm font-medium ${colorClass}`;
+        }
+    </script>
+
+</body>
+</html>

@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # This is the folder where uploaded files will be saved.
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'input'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
