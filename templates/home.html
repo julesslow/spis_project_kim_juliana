@@ -50,8 +50,11 @@
             height: auto;
             top: 380px; 
             left: 450px; 
+            transition: transform 0.1s ease; 
         }
-
+        .settings-button:hover img {
+            transform: scale(1.1);
+        }
         .upload-button img {
             background: none;
             border: none;
@@ -61,6 +64,10 @@
             height: auto;
             top: 450px; 
             left: 450px; 
+            transition: transform 0.1s ease; 
+        }
+        .upload-button:hover img {
+            transform: scale(1.1);
         }
 
         .info-button img{
@@ -72,6 +79,10 @@
             height: auto;
             top: 520px; 
             left: 450px; 
+            transition: transform 0.1s ease; 
+        }
+        .info-button:hover img {
+            transform: scale(1.1);
         }
 
         .logo img {
@@ -89,8 +100,12 @@
             height: auto;
             cursor: pointer;
             position: absolute;
-            top: 250px; 
-            right: 300px;
+            top: 300px; 
+            right: 320px;
+            transition: transform 0.1s ease; 
+        }
+        .play-button:hover img {
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -114,7 +129,7 @@
                 </script>
 
                 <button id="upload-button" class = "upload-button">
-                    <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412565196995690586/upload_button.png?ex=68b8c15b&is=68b76fdb&hm=a70c5489d95e5a81068a277ea2e2a38f25b4f36631cee18a36847584a126dd31&">
+                    <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412848078167212032/mp3convert_button.png?ex=68b9c8cf&is=68b8774f&hm=100440fbe46dc9edf2cb248dbedcea0f37641ea508370b130f751b91e9a52e10">
                 </button>
 
                 <script>    
@@ -144,7 +159,7 @@
             <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412578903582834709/logo.png?ex=68b8ce1f&is=68b77c9f&hm=1e7e4f8a96729dbff8062941455744e2c06952a0e8f75ae0126f7fa7468b547a" alt="NekoNote">
         </div>
         <button id="play-button" class="play-button">
-            <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412542430992924773/play_button.png?ex=68b8ac27&is=68b75aa7&hm=db4f09aadf49abc4c0b4f9d2b134dce67f873e3f80227fbcce558c75e9f20ebb&" alt="Play">
+            <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412840511370428416/play_button.png?ex=68b9c1c3&is=68b87043&hm=555522a0acad029bb4fe9de0c375cc0cb70136380ed9913b0ea6f99a4f6e76b7" alt="Play">
         </button>
         <script>
             const playButton = document.getElementById('play-button');
