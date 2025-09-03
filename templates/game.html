@@ -92,16 +92,11 @@ overflow: hidden;
 </div>
 
 <script>
-
-    
-
     const gameArea = document.getElementById('game-area');
     const startButton = document.getElementById('startButton');
     const scoreDisplay = document.getElementById('score-display');
     const dataContainer = document.getElementById('beatmap-data');
-    // Web Audio API setup
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    let songBuffer = null; // This will hold our decoded song
+    
     
     let allBeatmaps = {};
     let notesOnScreen = [];
@@ -147,32 +142,6 @@ overflow: hidden;
             }
         }
         requestAnimationFrame(animate);
-    }
-
-    // ADD THIS NEW FUNCTION after your animate() function
-
-    async function loadSong(songName) {
-    try {
-        // Construct the file path dynamically
-        const filePath = `input/${songName}.mp3`;
-        console.log(`Attempting to load song from: ${filePath}`);
-        
-        const response = await fetch(filePath);
-        if (!response.ok) {
-        throw new Error(`Song file not found at ${filePath}`);
-        }
-        
-        const arrayBuffer = await response.arrayBuffer();
-        
-        // Decode the audio data into a buffer that we can play
-        songBuffer = await audioContext.decodeAudioData(arrayBuffer);
-        console.log('Song loaded and decoded successfully!');
-    } catch (error) {
-        console.error('Error loading song:', error);
-        dataContainer.innerHTML += `<p class="text-red-500">Error loading audio: ${error.message}</p>`;
-        // We re-throw the error so Promise.all knows something failed
-        throw error;
-    }
     }
 
     function getUrlParameter(name) {
@@ -258,39 +227,16 @@ overflow: hidden;
     document.addEventListener('DOMContentLoaded', () => {
         const songName = getUrlParameter('song_name');
         if (songName) {
-            // Use Promise.all to run both loading tasks concurrently
-            Promise.all([
-            loadAllBeatmaps(songName),
-            loadSong(songName)
-            ]).then(() => {
-            console.log('Both beatmaps and song are ready.');
-            // This code runs only if BOTH promises succeed.
-            // The button enabling logic is already inside loadAllBeatmaps, which is fine.
-            }).catch(error => {
-            console.error("Failed to load game assets:", error);
-            // The button will remain disabled if anything fails.
-            });
+            loadAllBeatmaps(songName);
         } else {
             dataContainer.innerHTML = `<p class="text-red-500">Error: No song name found in URL.</p>`;
             console.error("No song name found in URL.");
         }
-        });
-
+    });
 
     startButton.addEventListener('click', () => {
         const beatmapFilenames = Object.keys(allBeatmaps);
-        if (beatmapFilenames.length > 0 && songBuffer) {
-
-            // --- Play the loaded song ---
-            const source = audioContext.createBufferSource();
-            source.buffer = songBuffer;
-            source.connect(audioContext.destination);
-            source.start(0); // Play immediately
-            
-            console.log("Starting game and playing song!");
-            
-            // --- Schedule notes based on the audio context's clock for precision ---
-
+        if (beatmapFilenames.length > 0) {
             const firstBeatmapData = allBeatmaps[beatmapFilenames[0]];
             const secondBeatmapData = allBeatmaps[beatmapFilenames[1]];
             firstBeatmapData.notes.forEach(note => {
@@ -313,45 +259,13 @@ overflow: hidden;
 
             animate();
             startButton.disabled = true;
-            gameRunning = true; // FIX: The gameRunning variable is now set to true.
+            
+
 
         } else {
             // This block should now be unreachable since the button is only enabled when data is present.
             // It's kept for extreme debugging purposes.
             console.error("No beatmap data available to start the game.");
-        }
-    });
-    document.addEventListener('keydown', (event) => {
-        if (!gameRunning) return;
-
-        // Define the lanes and their corresponding x-coordinates.
-        const keyToLaneX = {
-            'KeyQ': 200,
-            'KeyP': 400,
-        };
-
-        const targetX = keyToLaneX[event.code];
-        if (targetX === undefined) {
-            // If the pressed key is not one of our defined keys, do nothing.
-            return;
-        }
-
-        const hitZoneTop = gameArea.clientHeight - document.getElementById('hit-zone').clientHeight;
-
-        // Iterate through the notes from last to first to process the latest note first.
-        for (let i = notesOnScreen.length - 1; i >= 0; i--) {
-            const note = notesOnScreen[i];
-            const noteBottom = note.offsetTop + note.clientHeight;
-            const noteX = parseInt(note.style.left, 10);
-
-            // Check if the note is in the hit zone AND in the correct lane
-            if (noteBottom > hitZoneTop && noteX === targetX) {
-                note.remove();
-                notesOnScreen.splice(i, 1);
-                score += 10;
-                scoreDisplay.textContent = `Score: ${score}`;
-                break; // Only hit one note per key press
-            }
         }
     });
 
