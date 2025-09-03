@@ -9,23 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Define what happens when each button is clicked ---
 
-    playButton.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevents the link from trying to navigate
+    playButton.addEventListener('click', () => {
         play();
     });
 
-    settingsButton.addEventListener('click', (event) => {
-        event.preventDefault();
+    settingsButton.addEventListener('click', () => {
         settings();
     });
 
-    uploadButton.addEventListener('click', (event) => {
-        event.preventDefault();
+    uploadButton.addEventListener('click', () => {
         upload();
     });
 
-    infoButton.addEventListener('click', (event) => {
-        event.preventDefault();
+    infoButton.addEventListener('click', () => {
         info();
     });
 
@@ -34,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function play() {
         alert("Play button clicked!"); // Optional: show a popup
+        window.location.href = "play.html"; // Redirect to game.html
     }
 
     function settings() {
@@ -42,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function upload() {
         console.log("upload button clicked");
+        window.location.href = "file_uploader.html";
     }
 
     function info() {
