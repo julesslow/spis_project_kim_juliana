@@ -1,38 +1,72 @@
-# This is our Python server that will handle the file uploads.
 import os
-from flask import Flask, request, jsonify, render_template
+import json
+from flask import Flask, request, jsonify, render_template, send_from_directory, redirect
 from flask_sqlalchemy import SQLAlchemy
+from song_split import song_split
+import generate_beatmap
 
 # We create an instance of the Flask application.
 app = Flask(__name__)
-
-# This is where we configure our database.
-# We will use a simple SQLite database for this example.
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///music_files.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
 # This is the folder where uploaded files will be saved.
 UPLOAD_FOLDER = 'input'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# We create a database model to represent a music file.
-# It will store the filename and the path to the file.
+# This is where your beatmap files will be stored.
+BEATMAP_FOLDER = 'beatmaps'
+if not os.path.exists(BEATMAP_FOLDER):
+    os.makedirs(BEATMAP_FOLDER)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///music_files.db'
+db = SQLAlchemy(app)
+
 class MusicFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(255), nullable=False)
-    filepath = db.Column(db.String(255), nullable=False)
+    filename = db.Column(db.String(100), nullable=False)
+    filepath = db.Column(db.String(200), nullable=False)
 
-# This new route handles GET requests to the root URL ('/').
-# It will send the file_uploader.html page to the user's browser.
+    def __repr__(self):
+        return f'<MusicFile {self.filename}>'
+
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('home.html')
+    return render_template('file_uploader.html')
+
+@app.route('/game', methods=['GET'])
+def game():
+    return render_template('game.html')
+
+# This is the original route for the beatmap TXT files.
+@app.route('/beatmaps/<path:filename>')
+def serve_beatmap(filename):
+    return send_from_directory(BEATMAP_FOLDER, filename)
+
+# ---
+# This is a new route specifically for the JSON beatmap files.
+# It serves files from the "beatmaps_json" folder.
+@app.route('/beatmaps_json/<path:filename>')
+def serve_json_beatmap(filename):
+    return send_from_directory("beatmaps_json", filename)
+
+# ---
+# New route to get a list of beatmap JSON files for a given song name.
+
+@app.route('/get_beatmap_files/<song_name>')
+def get_beatmap_files(song_name):
+    """
+    This route provides a list of all beatmap JSON files for a given song.
+    The `osu_game.html` page will use this to get a list of all beatmaps to load.
+    """
+    beatmap_files = []
+    # We loop through all files in the beatmaps_json folder.
+    for filename in os.listdir("beatmaps_json"):
+        # We check if the filename starts with the song's name.
+        if filename.startswith(song_name) and filename.endswith(".json"):
+            beatmap_files.append(filename)
+    return jsonify(beatmap_files)
 
 
-# This decorator defines a route that will handle file uploads.
-# We specify that it only accepts POST requests from the website.
 @app.route('/upload', methods=['POST'])
 def upload_file():
     # Check if the 'music_file' part is in the request.
@@ -51,21 +85,44 @@ def upload_file():
         # We create a secure file path to prevent any issues.
         filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         
-        # Save the file to the 'input' folder.
+        # Save the file to the `uploads` folder.
         file.save(filepath)
-        
-        # Now, we create a new entry in our database.
+
+        print("File saved successfully. Starting song split...")
+        try:
+            song_split(filepath)
+            print("Song split finished.")
+        except Exception as e:
+            print(f"ERROR: Song split failed. Reason: {e}")
+            return jsonify({'error': 'Failed to process song split.'}), 500
+
+        # Add a record to the database
         new_file = MusicFile(filename=file.filename, filepath=filepath)
         db.session.add(new_file)
         db.session.commit()
         
-        # Return a success message.
-        return jsonify({'message': f'File uploaded successfully: {file.filename}'}), 200
+        print("Starting beatmap generation...")
+        try:
+            spleeter_output_path = os.path.join("outputs", os.path.splitext(file.filename)[0])
+            generate_beatmap.create_beatmaps_from_spleeter_folders(spleeter_output_path)
+            print("Beatmap generation finished.")
+            
+            # The convert_to_json function from generate_beatmap.py will automatically
+            # save the JSON files to a folder called "beatmaps_json".
+            generate_beatmap.convert_to_json()
+        except Exception as e:
+            print(f"ERROR: Beatmap generation failed. Reason: {e}")
+            return jsonify({'error': 'Failed to generate beatmap.'}), 500
+        
+        # This is the fix: We redirect to a new list page, not a specific file.
+        song_name = os.path.splitext(file.filename)[0]
+
+        # Redirect to the game page and pass the song name in the URL
+        return redirect(f"/game?song_name={song_name}")
 
 # This part runs the web server.
 if __name__ == '__main__':
-    # This line creates the database file and table if they don't already exist.
+    # We set debug=True so we can see any errors easily.
     with app.app_context():
         db.create_all()
-    # We set debug=True so we can see any errors easily.
     app.run(debug=True)

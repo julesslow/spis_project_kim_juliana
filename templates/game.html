@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osu Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #game-area {
+            width: 800px;
+            height: 600px;
+            background-color: #2d3748;
+            border: 2px solid #4a5568;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .note {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #e53e3e;
+            border-radius: 50%;
+            border: 2px solid #fed7d7;
+            cursor: pointer;
+            transition: transform 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="text-3xl font-bold mb-4">Osu!</div>
+    <div id="game-area" class="rounded-lg shadow-lg"></div>
+    <div class="mt-4">
+        <button id="startButton" class="px-6 py-2 bg-indigo-600 rounded-lg font-bold text-lg hover:bg-indigo-700">Start Game</button>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const startButton = document.getElementById('startButton');
+        
+        // This object will store all the beatmap data once it's loaded.
+        let allBeatmaps = {};
+
+        function createNote(x, y) {
+            const note = document.createElement('div');
+            note.className = 'note';
+            // We set the position based on the data we got.
+            note.style.left = `${x}px`;
+            note.style.top = `${y}px`;
+            gameArea.appendChild(note);
+
+            note.addEventListener('click', () => {
+                note.remove();
+            });
+        }
+        
+        // This function will fetch all beatmap files for a song.
+        async function loadAllBeatmaps(songName) {
+            try {
+                // First, we fetch the list of all filenames from the server.
+                const response = await fetch(`/get_beatmap_files/${songName}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to get beatmap list: ${response.statusText}`);
+                }
+                const beatmapFiles = await response.json();
+                console.log('Found beatmap files:', beatmapFiles);
+
+                // Now we fetch the data for each file and store it.
+                for (const filename of beatmapFiles) {
+                    const beatmapResponse = await fetch(`/beatmaps_json/${filename}`);
+                    if (!beatmapResponse.ok) {
+                        throw new Error(`Failed to load beatmap file: ${filename}`);
+                    }
+                    const beatmapData = await beatmapResponse.json();
+                    
+                    // We can use the filename to identify the beatmap data.
+                    allBeatmaps[filename] = beatmapData;
+                    console.log(`Loaded ${filename}:`, beatmapData);
+                }
+                console.log('All beatmaps loaded successfully.');
+                
+            } catch (error) {
+                console.error('Error loading beatmaps:', error);
+            }
+        }
+
+        // We call the loading function when the page loads.
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const songName = urlParams.get('song_name');
+            
+            if (songName) {
+                loadAllBeatmaps(songName);
+            } else {
+                console.error("No song name found in URL.");
+            }
+        });
+
+        // The start button now uses the loaded data.
+        startButton.addEventListener('click', () => {
+            // Here you can choose which beatmap to play.
+            // For now, we'll just use the first one we find.
+            const firstBeatmapFilename = Object.keys(allBeatmaps)[0];
+            if (firstBeatmapFilename) {
+                const beatmapData = allBeatmaps[firstBeatmapFilename];
+                beatmapData.notes.forEach(note => {
+                    // You would need to add logic here to make notes appear over time.
+                    createNote(note.x, note.y);
+                });
+            } else {
+                console.error("No beatmap data available to start the game.");
+            }
+            
+            startButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
