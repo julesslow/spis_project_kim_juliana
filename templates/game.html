@@ -77,7 +77,7 @@ overflow: hidden;
 
 </head>
 <body class="bg-gray-900">
-<div class="text-3xl font-bold mb-4">Osu!</div>
+<div class="text-3xl font-bold mb-4">NekoNote!</div>
 <div id="score-display">Score: 0</div>
 <div id="game-area">
 <!-- The visual hit zone at the bottom of the game area -->
@@ -92,15 +92,21 @@ overflow: hidden;
 </div>
 
 <script>
+
+    
+
     const gameArea = document.getElementById('game-area');
     const startButton = document.getElementById('startButton');
     const scoreDisplay = document.getElementById('score-display');
     const dataContainer = document.getElementById('beatmap-data');
+    // Web Audio API setup
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let songBuffer = null; // This will hold our decoded song
     
     let allBeatmaps = {};
     let notesOnScreen = [];
     let score = 0;
-    const noteSpeed = 2; // pixels per frame
+    const noteSpeed = 3; // pixels per frame
     // This is a calculated value to make notes fall at a consistent speed.
     // It's not directly used for scheduling notes anymore.
     const fallDuration = gameArea.clientHeight / noteSpeed; 
@@ -143,6 +149,32 @@ overflow: hidden;
         requestAnimationFrame(animate);
     }
 
+    // ADD THIS NEW FUNCTION after your animate() function
+
+    async function loadSong(songName) {
+    try {
+        // Construct the file path dynamically
+        const filePath = `input/${songName}.mp3`;
+        console.log(`Attempting to load song from: ${filePath}`);
+        
+        const response = await fetch(filePath);
+        if (!response.ok) {
+        throw new Error(`Song file not found at ${filePath}`);
+        }
+        
+        const arrayBuffer = await response.arrayBuffer();
+        
+        // Decode the audio data into a buffer that we can play
+        songBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        console.log('Song loaded and decoded successfully!');
+    } catch (error) {
+        console.error('Error loading song:', error);
+        dataContainer.innerHTML += `<p class="text-red-500">Error loading audio: ${error.message}</p>`;
+        // We re-throw the error so Promise.all knows something failed
+        throw error;
+    }
+    }
+
     function getUrlParameter(name) {
         name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
         const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -153,7 +185,7 @@ overflow: hidden;
     async function loadAllBeatmaps(songName) {
         console.log(`Attempting to load beatmaps for song: ${songName}`);
         dataContainer.innerHTML = `<p class="text-gray-300">Searching for beatmaps...</p>`;
-
+        
         try {
             // First, fetch the list of available beatmap files from the server.
             const response = await fetch(`/get_beatmap_files/${songName}`);
@@ -226,16 +258,39 @@ overflow: hidden;
     document.addEventListener('DOMContentLoaded', () => {
         const songName = getUrlParameter('song_name');
         if (songName) {
-            loadAllBeatmaps(songName);
+            // Use Promise.all to run both loading tasks concurrently
+            Promise.all([
+            loadAllBeatmaps(songName),
+            loadSong(songName)
+            ]).then(() => {
+            console.log('Both beatmaps and song are ready.');
+            // This code runs only if BOTH promises succeed.
+            // The button enabling logic is already inside loadAllBeatmaps, which is fine.
+            }).catch(error => {
+            console.error("Failed to load game assets:", error);
+            // The button will remain disabled if anything fails.
+            });
         } else {
             dataContainer.innerHTML = `<p class="text-red-500">Error: No song name found in URL.</p>`;
             console.error("No song name found in URL.");
         }
-    });
+        });
+
 
     startButton.addEventListener('click', () => {
         const beatmapFilenames = Object.keys(allBeatmaps);
-        if (beatmapFilenames.length > 0) {
+        if (beatmapFilenames.length > 0 && songBuffer) {
+
+            // --- Play the loaded song ---
+            const source = audioContext.createBufferSource();
+            source.buffer = songBuffer;
+            source.connect(audioContext.destination);
+            source.start(0); // Play immediately
+            
+            console.log("Starting game and playing song!");
+            
+            // --- Schedule notes based on the audio context's clock for precision ---
+
             const firstBeatmapData = allBeatmaps[beatmapFilenames[0]];
             const secondBeatmapData = allBeatmaps[beatmapFilenames[1]];
             firstBeatmapData.notes.forEach(note => {
@@ -258,6 +313,8 @@ overflow: hidden;
 
             animate();
             startButton.disabled = true;
+            
+
 
         } else {
             // This block should now be unreachable since the button is only enabled when data is present.
