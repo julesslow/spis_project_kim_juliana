@@ -258,11 +258,45 @@ overflow: hidden;
 
             animate();
             startButton.disabled = true;
+            gameRunning = true; // FIX: The gameRunning variable is now set to true.
 
         } else {
             // This block should now be unreachable since the button is only enabled when data is present.
             // It's kept for extreme debugging purposes.
             console.error("No beatmap data available to start the game.");
+        }
+    });
+    document.addEventListener('keydown', (event) => {
+        if (!gameRunning) return;
+
+        // Define the lanes and their corresponding x-coordinates.
+        const keyToLaneX = {
+            'KeyQ': 200,
+            'KeyP': 400,
+        };
+
+        const targetX = keyToLaneX[event.code];
+        if (targetX === undefined) {
+            // If the pressed key is not one of our defined keys, do nothing.
+            return;
+        }
+
+        const hitZoneTop = gameArea.clientHeight - document.getElementById('hit-zone').clientHeight;
+
+        // Iterate through the notes from last to first to process the latest note first.
+        for (let i = notesOnScreen.length - 1; i >= 0; i--) {
+            const note = notesOnScreen[i];
+            const noteBottom = note.offsetTop + note.clientHeight;
+            const noteX = parseInt(note.style.left, 10);
+
+            // Check if the note is in the hit zone AND in the correct lane
+            if (noteBottom > hitZoneTop && noteX === targetX) {
+                note.remove();
+                notesOnScreen.splice(i, 1);
+                score += 10;
+                scoreDisplay.textContent = `Score: ${score}`;
+                break; // Only hit one note per key press
+            }
         }
     });
 
