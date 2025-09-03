@@ -37,11 +37,11 @@ class MusicFile(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('file_uploader.html')
+    return render_template('home.html')
 
-@app.route('/play', methods=['GET'])
+@app.route('/file-uploader', methods=['GET'])
 def play():
-    return render_template('play.html')
+    return render_template('file_uploader.html')
 
 @app.route('/game', methods=['GET'])
 def game():
