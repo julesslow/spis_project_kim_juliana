@@ -9,31 +9,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Define what happens when each button is clicked ---
 
-    playButton.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevents the link from trying to navigate
-        play();
-    });
+    playButton.addEventListener('click', play);
 
-    settingsButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        settings();
-    });
+    // settingsButton.addEventListener('click', () => {
+    //     settings();
+    // });
 
-    uploadButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        upload();
-    });
+    // uploadButton.addEventListener('click', () => {
+    //     upload();
+    // });
 
-    infoButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        info();
-    });
+    // infoButton.addEventListener('click', () => {
+    //     info();
+    // });
 
     // --- Your original functions ---
     // We use console.log, which is the browser equivalent of p5's print()
 
     function play() {
         alert("Play button clicked!"); // Optional: show a popup
+        // window.location.href = "play.html"; // Redirect to play.html
+        console.log("play button clicked");
     }
 
     function settings() {
@@ -42,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function upload() {
         console.log("upload button clicked");
+        window.location.href = "file_uploader.html";
     }
 
     function info() {

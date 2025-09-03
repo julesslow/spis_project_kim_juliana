@@ -1,0 +1,112 @@
+[
+    {
+        "file_name": "Conan Gray - Caramel (Official Music Video).mp3.mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/Conan Gray - Caramel (Official Music Video).mp3.mp3",
+        "file_size_bytes": 9653805,
+        "file_type": ".mp3",
+        "date_modified": "2025-09-02T18:22:43.487521",
+        "sha256_hash": "048c06c23b98e636eea519eab6cc93443094439a88da14d6479f480ad35eae96",
+        "output_folder_path": "Not found",
+        "output_wav_files": []
+    },
+    {
+        "file_name": "Ariana Grande - supernatural (live version).mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/Ariana Grande - supernatural (live version).mp3",
+        "file_size_bytes": 3963644,
+        "file_type": ".mp3",
+        "date_modified": "2025-09-03T04:19:21.068483",
+        "sha256_hash": "39f786b43ec79e3f0b39d17e89471f159d5bc2e6860d7d1d4092a9643a60cfef",
+        "output_folder_path": "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - supernatural (live version)",
+        "output_wav_files": [
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - supernatural (live version)/vocals.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - supernatural (live version)/other.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - supernatural (live version)/drums.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - supernatural (live version)/bass.wav"
+        ]
+    },
+    {
+        "file_name": "dandadan_otonoke.mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/dandadan_otonoke.mp3",
+        "file_size_bytes": 2403820,
+        "file_type": ".mp3",
+        "date_modified": "2025-08-29T20:46:35.916633",
+        "sha256_hash": "5324528901493f5cfbef77ebd3c490a026ef4b78d527fc7a4bb7490237c2b19e",
+        "output_folder_path": "/workspaces/spis_project_kim_juliana/outputs/dandadan_otonoke",
+        "output_wav_files": [
+            "/workspaces/spis_project_kim_juliana/outputs/dandadan_otonoke/vocals.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/dandadan_otonoke/other.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/dandadan_otonoke/drums.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/dandadan_otonoke/bass.wav"
+        ]
+    },
+    {
+        "file_name": "soda_pop.mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/soda_pop.mp3",
+        "file_size_bytes": 3618827,
+        "file_type": ".mp3",
+        "date_modified": "2025-08-29T20:46:37.812633",
+        "sha256_hash": "43129df04ff706c8c3947ae83437d35ac9b9338ed503dd767c06d9fd78d89474",
+        "output_folder_path": "/workspaces/spis_project_kim_juliana/outputs/soda_pop",
+        "output_wav_files": [
+            "/workspaces/spis_project_kim_juliana/outputs/soda_pop/vocals.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/soda_pop/other.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/soda_pop/drums.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/soda_pop/bass.wav"
+        ]
+    },
+    {
+        "file_name": "Conan Gray - Vodka Cranberry (Official Music Video).mp3.mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/Conan Gray - Vodka Cranberry (Official Music Video).mp3.mp3",
+        "file_size_bytes": 11826285,
+        "file_type": ".mp3",
+        "date_modified": "2025-09-02T18:22:43.766521",
+        "sha256_hash": "62bc6be59a31a67fb0c0d9f149946fc8dc918ddcae9216500a59c3997b2f6dee",
+        "output_folder_path": "Not found",
+        "output_wav_files": []
+    },
+    {
+        "file_name": "new_jeans.mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/new_jeans.mp3",
+        "file_size_bytes": 2620845,
+        "file_type": ".mp3",
+        "date_modified": "2025-08-29T20:46:41.627633",
+        "sha256_hash": "9dd77a030c6d1db6d44c983ab7d628d62075ccd2fe31c2e2d3bcff332f88f4c9",
+        "output_folder_path": "/workspaces/spis_project_kim_juliana/outputs/new_jeans",
+        "output_wav_files": [
+            "/workspaces/spis_project_kim_juliana/outputs/new_jeans/vocals.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/new_jeans/other.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/new_jeans/drums.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/new_jeans/bass.wav"
+        ]
+    },
+    {
+        "file_name": "angelic_jelly.mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/angelic_jelly.mp3",
+        "file_size_bytes": 2917283,
+        "file_type": ".mp3",
+        "date_modified": "2025-08-29T20:46:39.870633",
+        "sha256_hash": "2f54a9f7d8d94c2d91d694a464d1ea572af3787d8b45f649fcf184cd61562c4f",
+        "output_folder_path": "/workspaces/spis_project_kim_juliana/outputs/angelic_jelly",
+        "output_wav_files": [
+            "/workspaces/spis_project_kim_juliana/outputs/angelic_jelly/vocals.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/angelic_jelly/other.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/angelic_jelly/drums.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/angelic_jelly/bass.wav"
+        ]
+    },
+    {
+        "file_name": "Ariana Grande - Into You (Official Video).mp3",
+        "file_path": "/workspaces/spis_project_kim_juliana/input/Ariana Grande - Into You (Official Video).mp3",
+        "file_size_bytes": 6119059,
+        "file_type": ".mp3",
+        "date_modified": "2025-09-03T04:19:21.031483",
+        "sha256_hash": "349a87ddea5a57cb474fb5c04ba29964c8f8f6f8c5044914dce7fd8cf7075391",
+        "output_folder_path": "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - Into You (Official Video)",
+        "output_wav_files": [
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - Into You (Official Video)/vocals.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - Into You (Official Video)/other.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - Into You (Official Video)/drums.wav",
+            "/workspaces/spis_project_kim_juliana/outputs/Ariana Grande - Into You (Official Video)/bass.wav"
+        ]
+    }
+]
