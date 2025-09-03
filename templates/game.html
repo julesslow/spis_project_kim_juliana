@@ -1,130 +1,273 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Osu Game</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a202c;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osu Rhythm Game</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+font-family: 'Inter', sans-serif;
+background-color: #1a202c;
+color: #ffffff;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+height: 100vh;
+margin: 0;
+overflow: hidden;
+}
 
-        #game-area {
-            width: 800px;
-            height: 600px;
-            background-color: #2d3748;
-            border: 2px solid #4a5568;
-            position: relative;
-            overflow: hidden;
-        }
+    #game-area {
+        width: 800px;
+        height: 600px;
+        background-color: #2d3748;
+        border: 2px solid #4a5568;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+    }
 
-        .note {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-color: #e53e3e;
-            border-radius: 50%;
-            border: 2px solid #fed7d7;
-            cursor: pointer;
-            transition: transform 0.5s ease-out;
-        }
-    </style>
+    .note {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background-color: #e53e3e;
+        border-radius: 50%;
+        border: 2px solid #fed7d7;
+        cursor: pointer;
+        transition: transform 0.1s ease-in-out;
+    }
+
+    .note:hover {
+        transform: scale(1.1);
+    }
+
+    #hit-zone {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background-color: #48bb78;
+    }
+
+    #score-display {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #48bb78;
+        margin-bottom: 20px;
+    }
+
+    .game-over-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #fc8181;
+        z-index: 10;
+    }
+</style>
+
 </head>
-<body>
-    <div class="text-3xl font-bold mb-4">Osu!</div>
-    <div id="game-area" class="rounded-lg shadow-lg"></div>
-    <div class="mt-4">
-        <button id="startButton" class="px-6 py-2 bg-indigo-600 rounded-lg font-bold text-lg hover:bg-indigo-700">Start Game</button>
-    </div>
+<body class="bg-gray-900">
+<div class="text-3xl font-bold mb-4">Osu!</div>
+<div id="score-display">Score: 0</div>
+<div id="game-area">
+<!-- The visual hit zone at the bottom of the game area -->
+<div id="hit-zone"></div>
+</div>
+<div id="beatmap-data" class="bg-gray-700 p-4 rounded-lg text-left text-sm font-mono overflow-auto mt-4 w-full max-w-lg">
+<p class="text-gray-300">Loading beatmaps...</p>
+</div>
+<div class="mt-8">
+<!-- The button is now disabled by default until the beatmaps are loaded -->
+<button id="startButton" disabled class="px-6 py-3 bg-indigo-600 rounded-full font-bold text-lg text-white opacity-50 cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Start Game</button>
+</div>
 
-    <script>
-        const gameArea = document.getElementById('game-area');
-        const startButton = document.getElementById('startButton');
+<script>
+    const gameArea = document.getElementById('game-area');
+    const startButton = document.getElementById('startButton');
+    const scoreDisplay = document.getElementById('score-display');
+    const dataContainer = document.getElementById('beatmap-data');
+    
+    let allBeatmaps = {};
+    let notesOnScreen = [];
+    let score = 0;
+    const noteSpeed = 2; // pixels per frame
+    // This is a calculated value to make notes fall at a consistent speed.
+    // It's not directly used for scheduling notes anymore.
+    const fallDuration = gameArea.clientHeight / noteSpeed; 
+
+    function createNote(x) {
+        const note = document.createElement('div');
+        note.className = 'note';
+        note.style.left = `${x}px`;
+        note.style.top = `0px`; // Notes will now always start at the very top.
+        gameArea.appendChild(note);
+
+        notesOnScreen.push(note);
         
-        // This object will store all the beatmap data once it's loaded.
-        let allBeatmaps = {};
+        note.addEventListener('click', () => {
+            // Check if the note is within the hit zone
+            const noteBottom = note.offsetTop + note.clientHeight;
+            const hitZoneTop = gameArea.clientHeight - document.getElementById('hit-zone').clientHeight;
 
-        function createNote(x, y) {
-            const note = document.createElement('div');
-            note.className = 'note';
-            // We set the position based on the data we got.
-            note.style.left = `${x}px`;
-            note.style.top = `${y}px`;
-            gameArea.appendChild(note);
-
-            note.addEventListener('click', () => {
+            if (noteBottom > hitZoneTop) {
                 note.remove();
-            });
-        }
-        
-        // This function will fetch all beatmap files for a song.
-        async function loadAllBeatmaps(songName) {
-            try {
-                // First, we fetch the list of all filenames from the server.
-                const response = await fetch(`/get_beatmap_files/${songName}`);
-                if (!response.ok) {
-                    throw new Error(`Failed to get beatmap list: ${response.statusText}`);
-                }
-                const beatmapFiles = await response.json();
-                console.log('Found beatmap files:', beatmapFiles);
+                notesOnScreen = notesOnScreen.filter(n => n !== note);
+                score += 10;
+                scoreDisplay.textContent = `Score: ${score}`;
+            }
+        });
+    }
 
-                // Now we fetch the data for each file and store it.
-                for (const filename of beatmapFiles) {
+    function animate() {
+        for (let i = 0; i < notesOnScreen.length; i++) {
+            const note = notesOnScreen[i];
+            const currentTop = parseInt(note.style.top, 10);
+            note.style.top = `${currentTop + noteSpeed}px`;
+            
+            if (currentTop > gameArea.clientHeight) {
+                note.remove();
+                notesOnScreen.splice(i, 1);
+                i--;
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    async function loadAllBeatmaps(songName) {
+        console.log(`Attempting to load beatmaps for song: ${songName}`);
+        dataContainer.innerHTML = `<p class="text-gray-300">Searching for beatmaps...</p>`;
+
+        try {
+            // First, fetch the list of available beatmap files from the server.
+            const response = await fetch(`/get_beatmap_files/${songName}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to get beatmap list: ${response.status} ${response.statusText}. Server message: ${errorText}`);
+            }
+            const beatmapFiles = await response.json();
+            
+            if (!Array.isArray(beatmapFiles) || beatmapFiles.length === 0) {
+                console.error("The server returned an empty or invalid list of beatmap files.");
+                dataContainer.innerHTML = `<p class="text-red-500">Error: No valid beatmap files found. Please ensure .txt files are in the 'beatmaps' folder and your server is running.</p>`;
+                return;
+            }
+
+            dataContainer.innerHTML = `<p class="text-gray-300">Found ${beatmapFiles.length} beatmap file(s).</p>`;
+            console.log(`Found beatmap files:`, beatmapFiles);
+            
+            let validBeatmapsLoaded = 0;
+
+            for (const filename of beatmapFiles) {
+                if (filename.endsWith('.json')) {
+                    dataContainer.innerHTML += `<p class="text-gray-300">Fetching <strong>${filename}</strong>...</p>`;
+                    
+                    // FIX: Change the URL to fetch the JSON beatmap, as the server serves these
+                    // instead of the raw text files.
                     const beatmapResponse = await fetch(`/beatmaps_json/${filename}`);
+                    
                     if (!beatmapResponse.ok) {
-                        throw new Error(`Failed to load beatmap file: ${filename}`);
+                        const errorText = await beatmapResponse.text();
+                        console.error(`Failed to load beatmap file: ${filename}. Server message: ${errorText}`);
+                        dataContainer.innerHTML += `<p class="text-red-500">Error: Could not load <strong>${filename}</strong>. Check if the file exists on the server.</p>`;
+                        continue; // Skip to the next file
                     }
+                    
+                    // FIX: Parse the response as JSON instead of plain text.
                     const beatmapData = await beatmapResponse.json();
                     
-                    // We can use the filename to identify the beatmap data.
-                    allBeatmaps[filename] = beatmapData;
-                    console.log(`Loaded ${filename}:`, beatmapData);
+                    // FIX: Get the 'notes' array directly from the JSON object.
+                    const notes = beatmapData.notes;
+
+                    if (notes.length > 0) {
+                        allBeatmaps[filename] = { notes };
+                        console.log(`Loaded and parsed ${filename}:`, allBeatmaps[filename]);
+                        validBeatmapsLoaded++;
+                    } else {
+                        console.warn(`Skipped ${filename}: No valid notes found in the file.`);
+                        dataContainer.innerHTML += `<p class="text-yellow-500">Warning: Found a beatmap file but it contained no valid notes: <strong>${filename}</strong></p>`;
+                    }
                 }
+            }
+
+            if (validBeatmapsLoaded > 0) {
+                dataContainer.innerHTML = `<p class="text-green-500">All beatmaps loaded successfully! Click Start Game.</p>`;
+                startButton.disabled = false;
+                startButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                startButton.classList.add('hover:bg-indigo-700');
                 console.log('All beatmaps loaded successfully.');
-                
-            } catch (error) {
-                console.error('Error loading beatmaps:', error);
+            } else {
+                dataContainer.innerHTML = `<p class="text-red-500">Error: No valid beatmap .json files were found. Please check the 'beatmaps_json' folder and ensure files have a .json extension and a valid ` + "`time`" + ` format.</p>`;
+                console.error("No valid beatmap .json files found.");
             }
+            
+        } catch (error) {
+            console.error('Error loading beatmaps:', error);
+            dataContainer.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
         }
+    }
 
-        // We call the loading function when the page loads.
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const songName = urlParams.get('song_name');
-            
-            if (songName) {
-                loadAllBeatmaps(songName);
-            } else {
-                console.error("No song name found in URL.");
-            }
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        const songName = getUrlParameter('song_name');
+        if (songName) {
+            loadAllBeatmaps(songName);
+        } else {
+            dataContainer.innerHTML = `<p class="text-red-500">Error: No song name found in URL.</p>`;
+            console.error("No song name found in URL.");
+        }
+    });
 
-        // The start button now uses the loaded data.
-        startButton.addEventListener('click', () => {
-            // Here you can choose which beatmap to play.
-            // For now, we'll just use the first one we find.
-            const firstBeatmapFilename = Object.keys(allBeatmaps)[0];
-            if (firstBeatmapFilename) {
-                const beatmapData = allBeatmaps[firstBeatmapFilename];
-                beatmapData.notes.forEach(note => {
-                    // You would need to add logic here to make notes appear over time.
-                    createNote(note.x, note.y);
-                });
-            } else {
-                console.error("No beatmap data available to start the game.");
-            }
-            
+    startButton.addEventListener('click', () => {
+        const beatmapFilenames = Object.keys(allBeatmaps);
+        if (beatmapFilenames.length > 0) {
+            const firstBeatmapData = allBeatmaps[beatmapFilenames[0]];
+            const secondBeatmapData = allBeatmaps[beatmapFilenames[1]];
+            firstBeatmapData.notes.forEach(note => {
+                // FIX: This now schedules the note creation based on the note's exact
+                // timestamp, ensuring all notes are created. The note will then fall
+                // at a consistent speed, taking `fallDuration` to reach the bottom.
+                setTimeout(() => {
+                    createNote(200);
+                }, note.y*1000);
+            });
+
+            secondBeatmapData.notes.forEach(note => {
+                // FIX: This now schedules the note creation based on the note's exact
+                // timestamp, ensuring all notes are created. The note will then fall
+                // at a consistent speed, taking `fallDuration` to reach the bottom.
+                setTimeout(() => {
+                    createNote(400);
+                }, note.y*1000);
+            });
+
+            animate();
             startButton.disabled = true;
-        });
-    </script>
+
+        } else {
+            // This block should now be unreachable since the button is only enabled when data is present.
+            // It's kept for extreme debugging purposes.
+            console.error("No beatmap data available to start the game.");
+        }
+    });
+
+</script>
+
 </body>
 </html>
+
