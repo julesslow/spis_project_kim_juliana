@@ -35,10 +35,10 @@
         height: 600px;
         background-color: #fff7fc;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
     }
     #game-background {
-        width: 800px;
+        width: 750px;
         position: relative;
     }
 
@@ -62,9 +62,9 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 50px;
+        height: 800px;
         background-color: #C6D998;
-        opacity: 0.8;
+        opacity: 0;
     }
 
     #score-display {
@@ -104,12 +104,12 @@
 <!-- The visual hit zone at the bottom of the game area -->
 <div id="hit-zone"></div>
 </div>
-<div id="beatmap-data" class="bg-gray-700 p-4 rounded-lg text-left text-sm font-mono overflow-auto mt-4 w-full max-w-lg">
+<div id="beatmap-data" class="bg-[#FFDBE0] p-4 rounded-lg text-left text-sm font-mono overflow-auto mt-4 w-full max-w-lg">
 <p class="text-gray-300">Loading beatmaps...</p>
 </div>
 <div class="mt-8">
 <!-- The button is now disabled by default until the beatmaps are loaded -->
-<button id="startButton" disabled class="px-6 py-3 bg-indigo-600 rounded-full font-bold text-lg text-white opacity-50 cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Start Game</button>
+<button id="startButton" disabled class="px-6 py-3 bg-[#C6D998] rounded-full font-bold text-lg text-[#000000] border-[#000000] border-2 opacity-50 cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Start Game</button>
 </div>
 
 <script>
