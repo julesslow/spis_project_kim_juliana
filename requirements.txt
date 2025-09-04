@@ -2,3 +2,4 @@ flask>=2.2.3
 ipython
 gunicorn
 Flask-SQLAlchemy
+librosa
