@@ -3,4 +3,4 @@ ipython
 gunicorn
 Flask-SQLAlchemy
 librosa
-docker
+spleeter
