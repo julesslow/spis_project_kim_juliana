@@ -11,8 +11,7 @@ app = Flask(__name__)
 
 # This is the folder where uploaded files will be saved.
 UPLOAD_FOLDER = 'input'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+input_folder = os.path.join(os.getcwd(), 'input')
 
 # This is where your beatmap files will be stored.
 BEATMAP_FOLDER = 'beatmaps'
@@ -78,8 +77,10 @@ def get_beatmap_files(song_name):
     return jsonify(beatmap_files)
 
 @app.route('/input/<path:filename>')
-def serve_input_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+def serve_mp3(filename):
+    # Ensure the path is correct before serving.
+    return send_from_directory(input_folder, filename)
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
