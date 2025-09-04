@@ -77,6 +77,9 @@ def get_beatmap_files(song_name):
     # We return the list as a JSON response.
     return jsonify(beatmap_files)
 
+@app.route('/input/<path:filename>')
+def serve_input_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
