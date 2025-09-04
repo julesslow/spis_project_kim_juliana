@@ -3,4 +3,3 @@ ipython
 gunicorn
 Flask-SQLAlchemy
 librosa
-spleeter
