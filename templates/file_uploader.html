@@ -21,15 +21,26 @@
             margin: 0;
         }
         .container {
-            background-image: url('https://cdn.discordapp.com/attachments/673327829160689674/1412718613282033695/song_container.png?ex=68b9503c&is=68b7febc&hm=5a670c0f915d478819666501b6f8ea37d1865850cb561ac309ad6c70750d4bfb');
+            /* background-image: url('https://cdn.discordapp.com/attachments/673327829160689674/1412718613282033695/song_container.png?ex=68b9503c&is=68b7febc&hm=5a670c0f915d478819666501b6f8ea37d1865850cb561ac309ad6c70750d4bfb'); */
             background-size: cover;
             background-position: center;
             padding: 2.5rem;
             width: 100%;
             text-align: center;
             position: fixed;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            overflow: visible;
         }
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1300px;
+            z-index: -1; 
+        }
+
         .input-group {
             margin-bottom: 1.5rem;
         }
@@ -39,7 +50,7 @@
             font-weight: 600;
         }
         .file-input {
-            width: 100%;
+            width: 1000px;
             padding: 0.5rem;
             border-radius: 0.5rem;
             border: 2px solid #584b4b;
@@ -56,11 +67,11 @@
         }
 
         .back-button img{
-            width:200px;
+            width:120px;
             cursor: pointer;
             margin-top: 0;
-            bottom: 170px;
-            left: 200px;
+            top: 30px;
+            left: 50px;
             position: absolute;
             transition: transform 0.1s ease;
         }
@@ -96,13 +107,13 @@
             margin-top: 1rem;
             position: relative;
             align-items: center;
-            left: 570px;
             animation: spin 2s linear infinite;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412718613282033695/song_container.png?ex=68baa1bc&is=68b9503c&hm=938f65e2008fb22e2e7a526ac808da18f00241ae1ddc52409ae62c43e4dded3c" class="background-image":>
         <h1 class="text-4xl font-bold mb-4">Upload Your Music File!</h1>
         <div class="input-group">
             <label for="musicFile" class="file-label">Choose your music file:</label>
@@ -114,12 +125,13 @@
         <img src="https://cdn.discordapp.com/attachments/673327829160689674/1413058009625526384/loading.png?ex=68ba8c52&is=68b93ad2&hm=2487cc3be648d7f013f6795eb059634d6cd23d407ef2476f6ca63cae67d64011" class="hidden" id="loadingIndicator" alt="Loading...";>
 
         <p id="message" class="message"></p>
+        <button id="backButton" class="back-button">
+            <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412896275723980800/back_button.png?ex=68b9f5b2&is=68b8a432&hm=4a8ae1a96dbe0b0bf1fbd4a8e9138a2761a2720d634ee235907ae5a45629f71b";>
+        </button>
     </div>
 
     <div>
-    <button id="backButton" class="back-button">
-        <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412896275723980800/back_button.png?ex=68b9f5b2&is=68b8a432&hm=4a8ae1a96dbe0b0bf1fbd4a8e9138a2761a2720d634ee235907ae5a45629f71b";>
-    </button>
+    
     </div>
 
     <script>
