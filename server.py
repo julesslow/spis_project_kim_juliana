@@ -47,6 +47,10 @@ def play():
 def info():
     return render_template('info.html')
 
+@app.route('/settings', methods=['GET'])
+def settings():
+    return render_template('settings.html')
+
 @app.route('/game', methods=['GET'])
 def game():
     return render_template('game.html')
