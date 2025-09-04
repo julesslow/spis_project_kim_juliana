@@ -34,10 +34,12 @@
         width: 800px;
         height: 600px;
         background-color: #fff7fc;
-        border: 2px solid #3b272c;
         position: relative;
         overflow: hidden;
-        border-radius: 12px;
+    }
+    #game-background {
+        width: 800px;
+        position: relative;
     }
 
     .note {
@@ -62,6 +64,7 @@
         width: 100%;
         height: 50px;
         background-color: #C6D998;
+        opacity: 0.8;
     }
 
     #score-display {
@@ -82,12 +85,22 @@
         color: #fc8181;
         z-index: 10;
     }
+
+    .logo img {
+        width: 300px;
+        height: auto;
+        top: 0px;
+    }
 </style>
 
 </head>
-<div class="text-4xl font-bold mb-4">NekoNote!</div>
+<!-- <div class="text-4xl font-bold mb-4">NekoNote!</div> -->
+<div class="logo">
+    <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412578903582834709/logo.png?ex=68b8ce1f&is=68b77c9f&hm=1e7e4f8a96729dbff8062941455744e2c06952a0e8f75ae0126f7fa7468b547a" alt="NekoNote">
+</div>
 <div id="score-display">Score: 0</div>
 <div id="game-area">
+<img id="game-background" src="https://cdn.discordapp.com/attachments/673327829160689674/1413093443265101825/game_area.png?ex=68baad52&is=68b95bd2&hm=9948890fc8513e1c77e786f9d528996027a8fc601c2ab6fd7ad041a04e8ffdc6" class="game-background";>
 <!-- The visual hit zone at the bottom of the game area -->
 <div id="hit-zone"></div>
 </div>
@@ -116,7 +129,7 @@
 
     function createNote(x) {
         const note = document.createElement('img');
-        note.src = "https://cdn.discordapp.com/attachments/673327829160689674/1412684783707885589/pink_note.png?ex=68ba823a&is=68b930ba&hm=3a5d1e33b942b2919afe67f3255c3f0bfbba87f072c772be0b4da679b12a36d4&"
+        note.src = "https://cdn.discordapp.com/attachments/673327829160689674/1412684785117302895/green_note.png?ex=68ba823b&is=68b930bb&hm=1544bcf180130bb58132b394d955f841b07dd0a3b27ff6a1186d1384cbe486e5&";
         note.className = 'note';
         note.style.left = `${x}px`;
         note.style.top = `0px`; // Notes will now always start at the very top.

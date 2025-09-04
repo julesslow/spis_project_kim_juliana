@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NekoNote!</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">  
+
+<style>
+    body {
+    font-family: 'Gaegu', sans-serif;
+    background-color: #fff7fc;
+    color: #000000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    }
+
+    .image-container {
+        background-image: url('https://cdn.discordapp.com/attachments/673327829160689674/1413093443265101825/game_area.png?ex=68baad52&is=68b95bd2&hm=9948890fc8513e1c77e786f9d528996027a8fc601c2ab6fd7ad041a04e8ffdc6)');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        position: relative;
+        width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px;
+        overflow: visible;
+    }
+    .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; 
+    }
+
+    #back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 100px;
+        height: auto;
+        transition: transform 0.1s ease; 
+    }
+    #back-button:hover {
+        transform: scale(1.1);
+    }
+</style>
+
+<body>
+<div class="image-container">
+    <img src="https://cdn.discordapp.com/attachments/673327829160689674/1413093443265101825/game_area.png?ex=68baad52&is=68b95bd2&hm=9948890fc8513e1c77e786f9d528996027a8fc601c2ab6fd7ad041a04e8ffdc6" class="background-image";>
+    <div class="text-content">
+            <h1 class="text-4xl font-bold mb-4">About NekoNote!</h1>
+        <p class="mb-4">NekoNote is a web-based rhythm game where you can upload your own music and create custom note patterns. Enjoy playing to your favorite tunes!</p>
+        <h2 class="text-2xl font-semibold mb-2">How to Play</h2>
+        <ul class="list-disc list-inside mb-4 text-left">
+            <li>Upload a music file (MP3 or WAV).</li>
+            <li>Wait for the AI model to generate beatmaps based on your file.</li>
+            <li>Play the game by hitting notes when they pass through the green hitbox.</li>
+        </ul>
+        <h2 class="text-2xl font-semibold mb-2">Controls</h2>
+        <ul class="list-disc list-inside mb-4 text-left">
+            <li>Use Q and P to hit notes.</li>
+            <!-- <li>Press Spacebar to pause/resume the game.</li> -->
+        </ul>
+    </div>
+    <a href="/" class="back-button">
+        <img src="https://cdn.discordapp.com/attachments/673327829160689674/1412896275723980800/back_button.png?ex=68ba9e72&is=68b94cf2&hm=02b14666a147eb176666f573f77f28db02887baadc52409b3ac13ff81bf40a5a" id="back-button">
+    </a>
+</div>
+    
+    <!-- <a href="/" class="text-blue-500 hover:underline">Back to Home</a> -->
+</body>
+
+</html>
