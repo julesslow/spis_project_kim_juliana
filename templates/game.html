@@ -272,9 +272,11 @@
         if (beatmapFilenames.length > 0) {
             const firstBeatmapData = allBeatmaps[beatmapFilenames[0]];
             const secondBeatmapData = allBeatmaps[beatmapFilenames[3]];
-
-            songAudio.play();
-            
+            function playAudioWithDelay() {
+                songAudio.play();
+                console.log("Audio started playing after delay.");
+            }
+            setTimeout(playAudioWithDelay(), 2000);
             firstBeatmapData.notes.forEach(note => {
                 // FIX: This now schedules the note creation based on the note's exact
                 // timestamp, ensuring all notes are created. The note will then fall
