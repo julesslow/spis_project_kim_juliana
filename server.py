@@ -43,6 +43,10 @@ def index():
 def play():
     return render_template('file_uploader.html')
 
+@app.route('/info', methods=['GET'])
+def info():
+    return render_template('info.html')
+
 @app.route('/game', methods=['GET'])
 def game():
     return render_template('game.html')
