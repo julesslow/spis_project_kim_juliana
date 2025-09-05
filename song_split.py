@@ -6,7 +6,7 @@ import shlex
 def song_split(song):
     """
     Splits a song into different audio components using Spleeter via a Docker container.
-    
+
     Args:
         song (str): The full path to the input audio file on the host machine.
     """
@@ -50,3 +50,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
